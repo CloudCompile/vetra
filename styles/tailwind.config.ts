@@ -6,11 +6,27 @@ const config: Config = {
     extend: {
       colors: {
         vetra: {
-          bg: '#eef2f8',
-          ink: '#1f2a3d',
-          storm: '#2a3f5f',
-          parchment: '#f5ede0',
+          bg: '#1a120d',
+          ink: '#f7ead7',
+          storm: '#2a1e15',
+          parchment: '#f3e2d0',
+          accent: '#f0a259',
+          accentSoft: '#f6c28b',
+          muted: '#d8c1ad',
         },
+      },
+      fontFamily: {
+        display: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
+        body: [
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica',
+          'Arial',
+          'sans-serif',
+        ],
       },
     },
   },

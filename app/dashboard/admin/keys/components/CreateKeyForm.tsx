@@ -63,14 +63,14 @@ export function CreateKeyForm({
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3 rounded border border-slate-200 p-4">
+    <form onSubmit={onSubmit} className="clay-panel space-y-3 rounded-3xl p-5">
       <h3 className="font-medium">Create API Key</h3>
       <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Key name" required />
       {showPlanPicker ? (
-        <label className="text-xs text-slate-500">
+        <label className="text-xs text-vetra-ink/70">
           Plan
           <select
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="clay-input mt-1 w-full rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-vetra-accent/40"
             value={planId}
             onChange={(e) => setPlanId(e.target.value)}
             required
@@ -93,7 +93,7 @@ export function CreateKeyForm({
       ) : null}
       <Input value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} type="datetime-local" />
       <Button type="submit" disabled={loading}>{loading ? 'Creating...' : 'Create'}</Button>
-      {result ? <p className="text-xs text-slate-500">{result}</p> : null}
+      {result ? <p className="text-xs text-vetra-ink/70">{result}</p> : null}
     </form>
   );
 }

@@ -70,7 +70,7 @@ export function PlanEditor() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3 rounded border border-slate-200 p-4">
+    <form onSubmit={onSubmit} className="clay-panel space-y-3 rounded-3xl p-5">
       <h3 className="font-medium">Create Plan</h3>
       <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Plan name" required />
       <Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="Slug" required />
@@ -116,7 +116,7 @@ export function PlanEditor() {
       <Button type="submit" disabled={loading}>
         {loading ? 'Saving...' : 'Save Plan'}
       </Button>
-      {result ? <p className="text-xs text-slate-500">{result}</p> : null}
+      {result ? <p className="text-xs text-vetra-ink/70">{result}</p> : null}
     </form>
   );
 }

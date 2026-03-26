@@ -7,4 +7,18 @@
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--vetra-bg);
+  color: var(--vetra-ink);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--vetra-ink);
 }
