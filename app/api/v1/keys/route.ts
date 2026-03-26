@@ -31,15 +31,3 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ data: created }, { status: 201 });
 }
-
-export async function DELETE(request: NextRequest) {
-  if (!(await isAdmin())) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
-  const id = request.nextUrl.searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'Missing key id' }, { status: 400 });
-
-  await db.apiKey.update({ where: { id }, data: { isActive: false } });
-  return NextResponse.json({ ok: true });
-}

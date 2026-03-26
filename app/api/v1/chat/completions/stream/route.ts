@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ChatCompletionRequestSchema } from '@/lib/schemas/chat';
+import { providerNameFromModel } from '@/lib/providers/model-router';
 import { globalRegistry } from '@/lib/providers/registry';
 
 export const runtime = 'edge';
-
-function providerNameFromModel(model: string) {
-  return model.startsWith('gpt') || model.startsWith('openai') ? 'openai' : 'local';
-}
 
 export async function POST(request: NextRequest) {
   try {

@@ -5,6 +5,17 @@ import { db } from './db';
 
 const encoder = new TextEncoder();
 
+function getAdminTokenSecret(): string {
+  const secret = process.env.ADMIN_SERVICE_TOKEN;
+  if (secret) return secret;
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('ADMIN_SERVICE_TOKEN must be set in production');
+  }
+
+  return 'vetra_admin_secret_token_local';
+}
+
 export async function getCurrentUser() {
   const { userId } = await clerkAuth();
   if (!userId) return null;
@@ -28,16 +39,14 @@ export function generateApiKey(): string {
 }
 
 export async function signInternalToken(payload: Record<string, unknown>, expiresIn = '1h') {
-  const secret = process.env.ADMIN_SERVICE_TOKEN ?? 'vetra_admin_secret_token_local';
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(expiresIn)
-    .sign(encoder.encode(secret));
+    .sign(encoder.encode(getAdminTokenSecret()));
 }
 
 export async function verifyInternalToken(token: string) {
-  const secret = process.env.ADMIN_SERVICE_TOKEN ?? 'vetra_admin_secret_token_local';
-  const { payload } = await jwtVerify(token, encoder.encode(secret));
+  const { payload } = await jwtVerify(token, encoder.encode(getAdminTokenSecret()));
   return payload;
 }

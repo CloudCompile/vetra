@@ -1,7 +1,5 @@
-import { NextRequest } from 'next/server';
 import { isAdmin } from './auth';
 
-export async function assertAdminAccess(_request: NextRequest): Promise<boolean> {
-  void _request;
+export async function assertAdminAccess(): Promise<boolean> {
   return isAdmin();
 }

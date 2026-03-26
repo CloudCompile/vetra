@@ -3,13 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logging';
 import { recordUsage } from '@/lib/metrics';
+import { providerNameFromModel } from '@/lib/providers/model-router';
 import { globalRegistry } from '@/lib/providers/registry';
 import { globalRateLimiter } from '@/lib/rate-limiter';
 import { ChatCompletionRequestSchema } from '@/lib/schemas/chat';
-
-function providerNameFromModel(model: string) {
-  return model.startsWith('gpt') || model.startsWith('openai') ? 'openai' : 'local';
-}
 
 export async function POST(request: NextRequest) {
   const start = Date.now();
