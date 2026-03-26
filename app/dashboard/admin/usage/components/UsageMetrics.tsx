@@ -30,8 +30,8 @@ export function UsageMetrics({
             <p className="text-slate-500">No usage yet.</p>
           ) : (
             <ul className="mt-2 space-y-1 text-slate-600">
-              {topModels.map((model) => (
-                <li key={model.label} className="flex justify-between">
+              {topModels.map((model, index) => (
+                <li key={`${model.label}-${index}`} className="flex justify-between">
                   <span>{model.label}</span>
                   <span>{model.value}</span>
                 </li>
@@ -45,8 +45,8 @@ export function UsageMetrics({
             <p className="text-slate-500">No key usage yet.</p>
           ) : (
             <ul className="mt-2 space-y-1 text-slate-600">
-              {topKeys.map((key) => (
-                <li key={key.label} className="flex justify-between">
+              {topKeys.map((key, index) => (
+                <li key={`${key.label}-${index}`} className="flex justify-between">
                   <span>{key.label}</span>
                   <span>{key.value}</span>
                 </li>
