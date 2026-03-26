@@ -13,6 +13,6 @@ describe('LocalProvider', () => {
     });
 
     expect(response.object).toBe('chat.completion');
-    expect(response.choices[0]?.text).toContain('hello');
+    expect(response.choices[0]?.message?.content).toContain('hello');
   });
 });

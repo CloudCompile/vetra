@@ -2,7 +2,7 @@ import { ChatCompletionRequest, ChatCompletionResponse } from '@/lib/schemas/cha
 import { IModelProvider } from './IModelProvider';
 
 type OpenAIChoice = {
-  message?: { content?: string };
+  message?: { content?: string; role?: string };
   index: number;
   finish_reason?: string;
 };
@@ -51,7 +51,10 @@ export class OpenAIProvider implements IModelProvider {
       created: data.created,
       model: data.model,
       choices: choices.map((choice) => ({
-        text: choice.message?.content ?? '',
+        message: {
+          role: 'assistant',
+          content: choice.message?.content ?? '',
+        },
         index: choice.index,
         finish_reason: choice.finish_reason ?? 'stop',
       })),

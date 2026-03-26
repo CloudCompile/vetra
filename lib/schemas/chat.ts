@@ -23,9 +23,12 @@ export const ChatCompletionResponseSchema = z.object({
   model: z.string(),
   choices: z.array(
     z.object({
-      text: z.string(),
+      message: z.object({
+        role: z.literal('assistant'),
+        content: z.string(),
+      }),
       index: z.number(),
-      finish_reason: z.string(),
+      finish_reason: z.string().nullable(),
     }),
   ),
   usage: z.object({

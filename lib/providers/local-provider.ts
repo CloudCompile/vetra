@@ -16,7 +16,7 @@ export class LocalProvider implements IModelProvider {
       model: request.model,
       choices: [
         {
-          text: content,
+          message: { role: 'assistant', content },
           index: 0,
           finish_reason: 'stop',
         },

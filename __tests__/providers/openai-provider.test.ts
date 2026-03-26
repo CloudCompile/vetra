@@ -32,6 +32,6 @@ describe('OpenAIProvider', () => {
     });
 
     expect(out.id).toBe('chatcmpl_1');
-    expect(out.choices[0]?.text).toBe('ok');
+    expect(out.choices[0]?.message?.content).toBe('ok');
   });
 });

@@ -1,12 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
-export function CreateKeyForm() {
+type PlanOption = { id: string; name: string };
+
+export function CreateKeyForm({
+  plans = [],
+  showPlanPicker = false,
+  showUserIdField = false,
+}: {
+  plans?: PlanOption[];
+  showPlanPicker?: boolean;
+  showUserIdField?: boolean;
+}) {
+  const router = useRouter();
   const [name, setName] = useState('');
-  const [planId, setPlanId] = useState('');
+  const [planId, setPlanId] = useState(plans[0]?.id ?? '');
+  const [userId, setUserId] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,7 +35,8 @@ export function CreateKeyForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
-          planId,
+          ...(showPlanPicker && planId ? { planId } : {}),
+          ...(showUserIdField && userId ? { userId } : {}),
           ...(expiresAt ? { expiresAt: new Date(expiresAt).toISOString() } : {}),
         }),
       });
@@ -33,10 +47,14 @@ export function CreateKeyForm() {
         return;
       }
 
-      setResult(`Created key: ${payload?.data?.name ?? 'Unnamed'} (${payload?.data?.id ?? 'no-id'})`);
+      setResult(
+        `Created key: ${payload?.data?.name ?? 'Unnamed'} • ${payload?.data?.key ?? 'no-key-returned'}`,
+      );
       setName('');
-      setPlanId('');
+      setPlanId(plans[0]?.id ?? '');
+      setUserId('');
       setExpiresAt('');
+      router.refresh();
     } catch {
       setResult('Network error creating key.');
     } finally {
@@ -48,7 +66,31 @@ export function CreateKeyForm() {
     <form onSubmit={onSubmit} className="space-y-3 rounded border border-slate-200 p-4">
       <h3 className="font-medium">Create API Key</h3>
       <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Key name" required />
-      <Input value={planId} onChange={(e) => setPlanId(e.target.value)} placeholder="Plan ID" required />
+      {showPlanPicker ? (
+        <label className="text-xs text-slate-500">
+          Plan
+          <select
+            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            value={planId}
+            onChange={(e) => setPlanId(e.target.value)}
+            required
+          >
+            {plans.length === 0 ? <option value="">No plans available</option> : null}
+            {plans.map((plan) => (
+              <option key={plan.id} value={plan.id}>
+                {plan.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
+      {showUserIdField ? (
+        <Input
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+          placeholder="Assign to user ID (optional)"
+        />
+      ) : null}
       <Input value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} type="datetime-local" />
       <Button type="submit" disabled={loading}>{loading ? 'Creating...' : 'Create'}</Button>
       {result ? <p className="text-xs text-slate-500">{result}</p> : null}

@@ -29,6 +29,11 @@ Open `http://localhost:3000`.
 - `/dashboard/admin/plans`
 - `/dashboard/admin/usage`
 
+## User Dashboard
+
+- `/dashboard`
+- `/dashboard/keys`
+
 
 ## Deployment Guide
 
