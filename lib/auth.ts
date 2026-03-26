@@ -1,7 +1,8 @@
-import { auth as clerkAuth } from '@clerk/nextjs/server';
+import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
 import { randomBytes } from 'crypto';
 import { SignJWT, jwtVerify } from 'jose';
 import { db } from './db';
+import { ensurePlanForUser } from './plans';
 
 const encoder = new TextEncoder();
 
@@ -16,10 +17,48 @@ function getAdminTokenSecret(): string {
   return 'vetra_admin_secret_token_local';
 }
 
-export async function getCurrentUser() {
+export async function ensureUser() {
   const { userId } = await clerkAuth();
   if (!userId) return null;
-  return db.user.findUnique({ where: { clerkId: userId } });
+
+  const existing = await db.user.findUnique({ where: { clerkId: userId } });
+  const clerkProfile = await currentUser();
+  const email =
+    clerkProfile?.emailAddresses?.[0]?.emailAddress ??
+    existing?.email ??
+    `${userId}@users.vetra.local`;
+  const name =
+    [clerkProfile?.firstName, clerkProfile?.lastName].filter(Boolean).join(' ') ||
+    clerkProfile?.username ||
+    existing?.name ||
+    null;
+
+  if (!existing) {
+    const created = await db.user.create({
+      data: {
+        clerkId: userId,
+        email,
+        name,
+      },
+    });
+    await ensurePlanForUser(created.id, created.planId);
+    return created;
+  }
+
+  const updated =
+    existing.email !== email || existing.name !== name
+      ? await db.user.update({
+          where: { id: existing.id },
+          data: { email, name },
+        })
+      : existing;
+
+  await ensurePlanForUser(updated.id, updated.planId);
+  return updated;
+}
+
+export async function getCurrentUser() {
+  return ensureUser();
 }
 
 export async function isAdmin() {
@@ -29,9 +68,9 @@ export async function isAdmin() {
 }
 
 export async function getUserPlan() {
-  const user = await getCurrentUser();
-  if (!user?.planId) return null;
-  return db.plan.findUnique({ where: { id: user.planId } });
+  const user = await ensureUser();
+  if (!user) return null;
+  return ensurePlanForUser(user.id, user.planId);
 }
 
 export function generateApiKey(): string {

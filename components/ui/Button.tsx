@@ -5,7 +5,7 @@ export function Button(props: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       {...rest}
-      className={`rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-slate-50 hover:bg-slate-700 disabled:opacity-60 ${className}`}
+      className={`clay-button inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vetra-accent disabled:translate-y-0 disabled:opacity-60 ${className}`}
     />
   );
 }

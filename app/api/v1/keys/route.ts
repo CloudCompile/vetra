@@ -1,32 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { generateApiKey, isAdmin } from '@/lib/auth';
+import { ensureUser, generateApiKey, isAdmin } from '@/lib/auth';
+import { ensurePlanForUser } from '@/lib/plans';
 import { CreateApiKeySchema } from '@/lib/schemas/api-key';
 
 export async function GET() {
-  if (!(await isAdmin())) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const admin = await isAdmin();
+  if (admin) {
+    const keys = await db.apiKey.findMany({
+      include: { plan: true, user: true },
+      orderBy: { createdAt: 'desc' },
+    });
+    return NextResponse.json({ data: keys });
   }
 
-  const keys = await db.apiKey.findMany({ include: { plan: true, user: true }, orderBy: { createdAt: 'desc' } });
+  const user = await ensureUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const keys = await db.apiKey.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: 'desc' },
+  });
   return NextResponse.json({ data: keys });
 }
 
 export async function POST(request: NextRequest) {
-  if (!(await isAdmin())) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const admin = await isAdmin();
+  const parsed = CreateApiKeySchema.parse(await request.json());
+
+  if (admin) {
+    if (!parsed.planId) {
+      return NextResponse.json({ error: 'planId is required for admin key creation' }, { status: 400 });
+    }
+
+    if (parsed.userId) {
+      const userExists = await db.user.findUnique({ where: { id: parsed.userId } });
+      if (!userExists) {
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      }
+    }
+
+    const created = await db.apiKey.create({
+      data: {
+        name: parsed.name,
+        key: generateApiKey(),
+        planId: parsed.planId,
+        userId: parsed.userId,
+        expiresAt: parsed.expiresAt ? new Date(parsed.expiresAt) : null,
+      },
+      include: { plan: true, user: true },
+    });
+
+    return NextResponse.json({ data: created }, { status: 201 });
   }
 
-  const parsed = CreateApiKeySchema.parse(await request.json());
+  const user = await ensureUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const plan = await ensurePlanForUser(user.id, user.planId);
   const created = await db.apiKey.create({
     data: {
       name: parsed.name,
       key: generateApiKey(),
-      planId: parsed.planId,
-      userId: parsed.userId,
+      planId: plan.id,
+      userId: user.id,
       expiresAt: parsed.expiresAt ? new Date(parsed.expiresAt) : null,
     },
-    include: { plan: true, user: true },
   });
 
   return NextResponse.json({ data: created }, { status: 201 });

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ClerkProvider } from '@clerk/nextjs';
 import { VetraTheme } from '@/components/branding/VetraTheme';
 
 export const metadata: Metadata = {
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full">
-        <VetraTheme>{children}</VetraTheme>
+        <ClerkProvider>
+          <VetraTheme>{children}</VetraTheme>
+        </ClerkProvider>
       </body>
     </html>
   );

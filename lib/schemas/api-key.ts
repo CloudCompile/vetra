@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const CreateApiKeySchema = z.object({
   name: z.string().min(1).max(100),
-  planId: z.string().min(1),
+  planId: z.string().min(1).optional(),
   userId: z.string().optional(),
   expiresAt: z.string().datetime().optional(),
 });

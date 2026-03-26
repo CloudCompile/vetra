@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
 
 export function Card({ children }: PropsWithChildren) {
-  return <div className="rounded-lg border border-slate-200 bg-white/80 p-4 shadow-sm">{children}</div>;
+  return <div className="clay-card rounded-3xl p-5">{children}</div>;
 }
