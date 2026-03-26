@@ -13,9 +13,9 @@ export default async function DashboardPage() {
       <main className="space-y-4">
         <h1 className="text-2xl font-semibold">Vetra Dashboard</h1>
         <p className="text-slate-600">Sign in to manage your API keys, usage, and plan.</p>
-        <Link className="text-slate-800 underline" href="/sign-in">
+        <a className="text-slate-800 underline" href="/sign-in">
           Sign in
-        </Link>
+        </a>
       </main>
     );
   }

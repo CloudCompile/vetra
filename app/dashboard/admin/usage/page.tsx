@@ -25,14 +25,14 @@ export default async function UsagePage() {
       by: ['model'],
       _count: { _all: true },
       where: { createdAt: { gte: startOfMonth } },
-      orderBy: { _count: { _all: 'desc' } },
+      orderBy: { _count: { model: 'desc' } },
       take: 5,
     }),
     db.usageLog.groupBy({
       by: ['apiKeyId'],
       _count: { _all: true },
       where: { createdAt: { gte: startOfMonth }, apiKeyId: { not: null } },
-      orderBy: { _count: { _all: 'desc' } },
+      orderBy: { _count: { apiKeyId: 'desc' } },
       take: 5,
     }),
   ]);

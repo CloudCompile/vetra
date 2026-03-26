@@ -14,7 +14,6 @@ import {
   estimateTokensFromText,
   getStartOfMonth,
   getUserRequestCountThisMonth,
-  resetApiKeyUsageIfNeeded,
 } from '@/lib/usage';
 import { createOpenAIStream } from '@/lib/openai-stream';
 
@@ -58,7 +57,14 @@ export async function handleChatCompletion(request: NextRequest, options?: { for
         return NextResponse.json({ error: 'Plan inactive' }, { status: 403 });
       }
 
-      apiKeyRecord = await resetApiKeyUsageIfNeeded(apiKeyRecord);
+      const startOfMonth = getStartOfMonth();
+      if (apiKeyRecord.quotaResetAt < startOfMonth) {
+        apiKeyRecord = await db.apiKey.update({
+          where: { id: apiKeyRecord.id },
+          data: { usageThisMonth: 0, quotaResetAt: startOfMonth },
+          include: { plan: true, user: true },
+        });
+      }
 
       if (apiKeyRecord.usageThisMonth >= apiKeyRecord.plan.monthlyQuota) {
         return NextResponse.json({ error: 'Monthly quota exceeded' }, { status: 402 });
