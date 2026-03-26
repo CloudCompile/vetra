@@ -1,0 +1,18 @@
+:root {
+  --vetra-bg: #eef2f8;
+  --vetra-ink: #1f2a3d;
+  --vetra-storm: #2a3f5f;
+  --vetra-parchment: #f5ede0;
+}
+
+.bg-vetra-bg {
+  background-color: var(--vetra-bg);
+}
+
+.text-vetra-ink {
+  color: var(--vetra-ink);
+}
+
+.vetra-theme {
+  background: radial-gradient(circle at top right, rgba(63, 93, 133, 0.2), transparent 40%), var(--vetra-bg);
+}
