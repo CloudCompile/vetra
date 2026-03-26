@@ -1,9 +1,15 @@
 {
-  "framework": "nextjs",
-  "functions": {
-    "app/api/v1/chat/completions/stream/route.ts": {
-      "runtime": "edge",
-      "maxDuration": 30
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
     }
-  }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ]
 }
