@@ -1,0 +1,35 @@
+openapi: 3.0.3
+info:
+  title: Vetra API
+  version: 1.0.0
+paths:
+  /api/v1/chat/completions:
+    post:
+      summary: Synchronous chat completion
+      responses:
+        '200':
+          description: Completion response
+  /api/v1/chat/completions/stream:
+    post:
+      summary: Streaming chat completion via SSE
+      responses:
+        '200':
+          description: SSE stream
+  /api/v1/models:
+    get:
+      summary: List available models
+      responses:
+        '200':
+          description: Model list
+  /api/health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Service is healthy
+  /api/ready:
+    get:
+      summary: Readiness check
+      responses:
+        '200':
+          description: Service is ready

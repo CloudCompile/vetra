@@ -1,0 +1,9 @@
+{
+  "framework": "nextjs",
+  "functions": {
+    "app/api/v1/chat/completions/stream/route.ts": {
+      "runtime": "edge",
+      "maxDuration": 30
+    }
+  }
+}
