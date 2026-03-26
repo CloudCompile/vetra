@@ -11,7 +11,7 @@ export class LocalProvider implements IModelProvider {
 
     return {
       id: `local-${Date.now()}`,
-      object: 'text_completion',
+      object: 'chat.completion',
       created: Math.floor(Date.now() / 1000),
       model: request.model,
       choices: [

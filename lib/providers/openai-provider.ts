@@ -1,6 +1,12 @@
 import { ChatCompletionRequest, ChatCompletionResponse } from '@/lib/schemas/chat';
 import { IModelProvider } from './IModelProvider';
 
+type OpenAIChoice = {
+  message?: { content?: string };
+  index: number;
+  finish_reason?: string;
+};
+
 export class OpenAIProvider implements IModelProvider {
   name = 'openai';
   private apiKey: string;
@@ -37,12 +43,14 @@ export class OpenAIProvider implements IModelProvider {
     }
 
     const data = await response.json();
+    const choices: OpenAIChoice[] = Array.isArray(data.choices) ? data.choices : [];
+
     return {
       id: data.id,
-      object: 'text_completion',
+      object: 'chat.completion',
       created: data.created,
       model: data.model,
-      choices: (Array.isArray(data.choices) ? data.choices : []).map((choice: { message?: { content?: string }; index: number; finish_reason?: string }) => ({
+      choices: choices.map((choice) => ({
         text: choice.message?.content ?? '',
         index: choice.index,
         finish_reason: choice.finish_reason ?? 'stop',

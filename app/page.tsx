@@ -9,7 +9,7 @@ export default function Home() {
       </p>
       <div className="flex gap-4">
         <Link href="/dashboard" className="rounded bg-slate-900 px-4 py-2 text-white">Open Dashboard</Link>
-        <Link href="/api/v1/health" className="rounded border border-slate-300 px-4 py-2">API Health</Link>
+        <a href="/api/v1/health" target="_blank" rel="noopener noreferrer" className="rounded border border-slate-300 px-4 py-2">API Health</a>
       </div>
     </main>
   );

@@ -18,7 +18,7 @@ export type ChatCompletionRequest = z.infer<typeof ChatCompletionRequestSchema>;
 
 export const ChatCompletionResponseSchema = z.object({
   id: z.string(),
-  object: z.literal('text_completion'),
+  object: z.literal('chat.completion'),
   created: z.number(),
   model: z.string(),
   choices: z.array(

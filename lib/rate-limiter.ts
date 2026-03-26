@@ -1,25 +1,31 @@
 export interface RateLimitConfig {
   requestsPerMinute: number;
+  refillRatePerMinute?: number;
 }
 
 class TokenBucket {
+  private readonly capacity: number;
+  private readonly refillRatePerMinute: number;
   private tokens: number;
   private lastRefill: number;
 
-  constructor(capacity: number) {
+  constructor(capacity: number, refillRatePerMinute: number) {
+    this.capacity = capacity;
+    this.refillRatePerMinute = refillRatePerMinute;
     this.tokens = capacity;
     this.lastRefill = Date.now();
   }
 
-  private refill(capacity: number): void {
+  private refill(): void {
     const now = Date.now();
     const timePassedMinutes = (now - this.lastRefill) / 1000 / 60;
-    this.tokens = Math.min(capacity, this.tokens + timePassedMinutes * capacity);
+    const refillTokens = timePassedMinutes * this.refillRatePerMinute;
+    this.tokens = Math.min(this.capacity, this.tokens + refillTokens);
     this.lastRefill = now;
   }
 
-  canConsume(capacity: number, amount = 1): boolean {
-    this.refill(capacity);
+  canConsume(amount = 1): boolean {
+    this.refill();
     if (this.tokens >= amount) {
       this.tokens -= amount;
       return true;
@@ -33,10 +39,13 @@ export class RateLimiter {
 
   canConsume(key: string, config: RateLimitConfig): boolean {
     if (!this.buckets.has(key)) {
-      this.buckets.set(key, new TokenBucket(config.requestsPerMinute));
+      this.buckets.set(
+        key,
+        new TokenBucket(config.requestsPerMinute, config.refillRatePerMinute ?? config.requestsPerMinute),
+      );
     }
 
-    return this.buckets.get(key)!.canConsume(config.requestsPerMinute);
+    return this.buckets.get(key)!.canConsume();
   }
 }
 

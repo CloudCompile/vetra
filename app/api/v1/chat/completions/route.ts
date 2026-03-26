@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Invalid API key' }, { status: 403 });
       }
 
-      if (apiKeyRecord.expiresAt && apiKeyRecord.expiresAt.getTime() < Date.now()) {
+      if (apiKeyRecord.expiresAt && apiKeyRecord.expiresAt.getTime() <= Date.now()) {
         return NextResponse.json({ error: 'API key expired' }, { status: 403 });
       }
 
