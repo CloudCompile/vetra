@@ -28,3 +28,8 @@ Open `http://localhost:3000`.
 - `/dashboard/admin/keys`
 - `/dashboard/admin/plans`
 - `/dashboard/admin/usage`
+
+
+## Deployment Guide
+
+- Vercel + Clerk setup: `docs/VERCEL_CLERK_SETUP.md`
